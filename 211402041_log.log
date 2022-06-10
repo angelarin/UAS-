@@ -1,0 +1,32 @@
+MariaDB [(none)]> USE task_manager;
+Database changed
+MariaDB [task_manager]> CREATE VIEW nim_211402041 AS
+    -> SELECT satu.id as 'Task Id', satu.task_name as 'Nama Task', satu.task_status as 'Status', satu.category_id as 'Kategori Indikator', dua.category_name as 'Kategori', tiga.indicator_name as 'Indikator', satu.user_create as 'Creator Id', empat.name as 'Creator Name', satu.task_priority as 'Prioritas'
+    -> FROM task_plans satu
+    -> RIGHT JOIN task_categories dua
+    -> ON satu.category_id = dua.id
+    -> RIGHT JOIN task_indicators tiga
+    -> ON satu.category_id = tiga.id
+    -> RIGHT JOIN users empat
+    -> ON satu.user_create = empat.id;
+Query OK, 0 rows affected (0.171 sec)
+
+MariaDB [task_manager]> SELECT a.id, a.task_name, b.task_status, b.task_comments, d.category_name as 'Category',DATEDIFF(a.task_duration_end, a.ask_duration_start) as 'Lama Pengerjaan',c.name as 'Create By', (SELECT name from users where users.id = b.user_verify_id ) as 'Verified By'FROM task_plans aRIGHT JOIN task_dailies b ON a.id = b.plan_idINNER JOIN users c ON b.user_id = c.idRIGHT JOIN task_categories d ON a.category_id = d.id;
+ERROR 1054 (42S22): Unknown column 'a.id' in 'field list'
+MariaDB [task_manager]> SELECT 
+    -> a.id, a.task_name, b.task_status, b.task_comments, d.category_name as 'Category',
+    -> DATEDIFF(a.task_duration_end, a.ask_duration_start) as 'Lama Pengerjaan',
+    -> c.name as 'Create By', (SELECT name from users where users.id = b.user_verify_id ) as 'Verified By'
+    -> FROM task_plans a
+    -> RIGHT JOIN task_dailies b ON a.id = b.plan_id
+    -> INNER JOIN users c ON b.user_id = c.id
+    -> RIGHT JOIN task_categories d ON a.category_id = d.id;
++------+-----------+-------------+---------------+--------------+-----------------+-----------+-------------+
+| id   | task_name | task_status | task_comments | Category     | Lama Pengerjaan | Create By | Verified By |
++------+-----------+-------------+---------------+--------------+-----------------+-----------+-------------+
+| NULL | NULL      | NULL        | NULL          | Analisis     |            NULL | NULL      | NULL        |
+| NULL | NULL      | NULL        | NULL          | Administrasi |            NULL | NULL      | NULL        |
+| NULL | NULL      | NULL        | NULL          | Teknikal     |            NULL | NULL      | NULL        |
++------+-----------+-------------+---------------+--------------+-----------------+-----------+-------------+
+3 rows in set (0.001 sec)
+
